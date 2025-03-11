@@ -13,11 +13,11 @@ def load_tally():
     try:
         with open(TALLY_FILE, "r") as file:
             data = json.load(file)
-            print("🔄 Loaded existing tally data:", data)  # Debug log
+            print("🔄 Loaded existing tally data from file:", data)  # Debug log
             return data
     except (FileNotFoundError, json.JSONDecodeError):
-        print("⚠️ No previous tally found. Starting fresh.")  # Debug log
-        return {}  # Return empty tally if file is missing or corrupted
+        print("⚠️ No previous tally found. Starting fresh.")
+        return {}
 
 # Save tally to file
 def save_tally():
