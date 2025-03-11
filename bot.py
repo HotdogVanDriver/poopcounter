@@ -46,28 +46,27 @@ async def on_ready():
 async def on_message(message):
     print(f"📩 Message received from {message.author.name}: {message.content}")  # Debug log
     print(f"🔍 Raw message content: {repr(message.content)}")  # Shows exact format
-    print(f"🏷️ Message Channel ID: {message.channel.id}")  # Show the actual channel ID
+    print(f"🏷️ Message Channel ID: {message.channel.id}")
 
     if message.author.bot:  # Ignore bot messages
         return
 
-    print(f"🔍 Target Channel ID: {TARGET_CHANNEL_ID}")  # Show the channel we're checking for
-
     if message.channel.id == TARGET_CHANNEL_ID:
-        print("✅ Message is in the correct channel!")  # Debug log
-        print("🔍 Checking if message contains 💩...")  # Debug log
-        print(f"✅ Comparing '{message.content}' to '💩'")  # Debug log
+        print("✅ Message is in the correct channel!")
+        print(f"✅ Comparing '{message.content}' to '💩'")
 
         if "💩" in message.content:
-            print("💩 Poop emoji detected!")  # Debug log
+            print("💩 Poop emoji detected!")
             user_id = str(message.author.id)  # Convert to string for JSON storage
             previous_count = poop_tally.get(user_id, 0)
             poop_tally[user_id] = previous_count + message.content.count("💩")
-            print(f"💩 Updated tally for {message.author.name}: {previous_count} → {poop_tally[user_id]}")  # Debug log
+            print(f"💩 Updated tally for {message.author.name}: {previous_count} → {poop_tally[user_id]}")
+            print("📊 Current poop_tally:", poop_tally)  # Show full tally
             save_tally()  # Save after every update
-            print("📁 Save function called!")  # Confirm save function is executed
+            print("📁 Save function called!")
 
     await bot.process_commands(message)  # Allow commands to work
+
 
 
 @bot.command()
