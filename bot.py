@@ -5,7 +5,7 @@ from discord.ext import commands
 
 # Load bot token from environment variable
 TOKEN = os.getenv("TOKEN")
-TARGET_CHANNEL_ID = 1348946242285076530  # Replace with your actual Discord channel ID
+TARGET_CHANNEL_ID = 1346841725213212763  # Replace with your actual Discord channel ID
 TALLY_FILE = "tally.json"  # File to store poop counts
 
 # Load tally from file
