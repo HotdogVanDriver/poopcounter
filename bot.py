@@ -25,9 +25,10 @@ def save_tally():
     try:
         with open(TALLY_FILE, "w") as file:
             json.dump(poop_tally, file, indent=4)
-        print("✅ Tally saved! Data:", poop_tally)  # Confirm save
+        print("✅ Tally saved successfully! Data:", poop_tally)  # Confirm save
     except Exception as e:
         print(f"❌ Failed to save tally: {e}")
+
 
 # Dictionary to store count per user
 poop_tally = load_tally()  # Load previous data when bot starts
@@ -54,11 +55,14 @@ async def on_message(message):
         if "💩" in message.content:
             print("💩 Poop emoji detected!")  # Debug log
             user_id = str(message.author.id)  # Convert to string for JSON storage
-            poop_tally[user_id] = poop_tally.get(user_id, 0) + message.content.count("💩")
-            print(f"💩 Counted {message.content.count('💩')} for {message.author.name} (Total: {poop_tally[user_id]})")  # Debug log
+            previous_count = poop_tally.get(user_id, 0)
+            poop_tally[user_id] = previous_count + message.content.count("💩")
+            print(f"💩 Updated tally for {message.author.name}: {previous_count} → {poop_tally[user_id]}")  # Debug log
             save_tally()  # Save after every update
+            print("📁 Save function called!")  # Confirm save function is executed
 
     await bot.process_commands(message)  # Allow commands to work
+
 
 
 @bot.command()
