@@ -5,7 +5,7 @@ from discord.ext import commands
 
 # Load bot token from environment variable
 TOKEN = os.getenv("TOKEN")
-TARGET_CHANNEL_ID = 123456789012345678  # Replace with your actual Discord channel ID
+TARGET_CHANNEL_ID = 1348946242285076530  # Replace with your actual Discord channel ID
 TALLY_FILE = "tally.json"  # File to store poop counts
 
 # Load tally from file
@@ -46,11 +46,15 @@ async def on_ready():
 async def on_message(message):
     print(f"📩 Message received from {message.author.name}: {message.content}")  # Debug log
     print(f"🔍 Raw message content: {repr(message.content)}")  # Shows exact format
+    print(f"🏷️ Message Channel ID: {message.channel.id}")  # Show the actual channel ID
 
     if message.author.bot:  # Ignore bot messages
         return
 
+    print(f"🔍 Target Channel ID: {TARGET_CHANNEL_ID}")  # Show the channel we're checking for
+
     if message.channel.id == TARGET_CHANNEL_ID:
+        print("✅ Message is in the correct channel!")  # Debug log
         print("🔍 Checking if message contains 💩...")  # Debug log
         print(f"✅ Comparing '{message.content}' to '💩'")  # Debug log
 
@@ -64,8 +68,6 @@ async def on_message(message):
             print("📁 Save function called!")  # Confirm save function is executed
 
     await bot.process_commands(message)  # Allow commands to work
-
-
 
 
 @bot.command()
