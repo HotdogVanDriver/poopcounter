@@ -56,7 +56,7 @@ async def on_message(message):
         print(f"✅ Comparing '{message.content}' to '💩'")
 
         if "💩" in message.content:
-            print("💩 Poop emoji detected!")
+            print("💩 Poop detected!")
             user_id = str(message.author.id)  # Convert to string for JSON storage
             previous_count = poop_tally.get(user_id, 0)
             poop_tally[user_id] = previous_count + message.content.count("💩")
@@ -71,17 +71,17 @@ async def on_message(message):
 
 @bot.command()
 async def tally(ctx):
-    """Shows the current poop emoji tally"""
+    """Shows the current poop tally"""
     poop_tally = load_tally()  # Load updated data before displaying
 
     valid_users = {user_id: count for user_id, count in poop_tally.items() if count > 0}
 
     if not valid_users:  # If no users have sent poops, send only this message
-        await ctx.send("No poop s emojis have been counted yet! 💩")
+        await ctx.send("No poop have been counted yet! 💩")
         return
 
     # If there are valid users, create the leaderboard
-    tally_message = "**💩 Poop Emoji Leaderboard 💩**\n"
+    tally_message = "**💩 Poop Leaderboard 💩**\n"
     for user_id, count in sorted(valid_users.items(), key=lambda x: x[1], reverse=True):
         user = await bot.fetch_user(int(user_id))  # Convert back to int
         tally_message += f"**{user.name}**: {count} 💩\n"
