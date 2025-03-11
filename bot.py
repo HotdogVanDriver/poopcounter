@@ -21,11 +21,11 @@ def load_tally():
 
 # Save tally to file
 def save_tally():
-    print("🔹 Attempting to save tally to file...")  # Debug log
+    print("🔹 Attempting to save tally...")  # Debug log
     try:
         with open(TALLY_FILE, "w") as file:
             json.dump(poop_tally, file, indent=4)
-        print("✅ Tally saved successfully! Data:", poop_tally)  # Confirm save
+        print("✅ Tally saved! Data:", poop_tally)  # Confirm save
     except Exception as e:
         print(f"❌ Failed to save tally: {e}")
 
