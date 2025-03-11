@@ -43,10 +43,13 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    print(f"📩 Message received from {message.author.name}: {message.content}")  # Debug log
+
     if message.author.bot:  # Ignore bot messages
         return
 
     if message.channel.id == TARGET_CHANNEL_ID and "💩" in message.content:
+        print("💩 Poop emoji detected!")  # Debug log
         user_id = str(message.author.id)  # Convert to string for JSON storage
         poop_tally[user_id] = poop_tally.get(user_id, 0) + message.content.count("💩")
         print(f"💩 Counted {message.content.count('💩')} for {message.author.name} (Total: {poop_tally[user_id]})")  # Debug log
