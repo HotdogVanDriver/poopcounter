@@ -51,7 +51,9 @@ async def on_message(message):
         return
 
     if message.channel.id == TARGET_CHANNEL_ID:
-        print("🔍 Checking for poop emojis...")  # Debug log
+        print("🔍 Checking if message contains 💩...")  # Debug log
+        print(f"✅ Comparing '{message.content}' to '💩'")  # Debug log
+
         if "💩" in message.content:
             print("💩 Poop emoji detected!")  # Debug log
             user_id = str(message.author.id)  # Convert to string for JSON storage
@@ -62,6 +64,7 @@ async def on_message(message):
             print("📁 Save function called!")  # Confirm save function is executed
 
     await bot.process_commands(message)  # Allow commands to work
+
 
 
 
