@@ -70,12 +70,11 @@ async def on_message(message):
 
 @bot.command()
 async def tally(ctx):
-    # Use in-memory tally (since we can't write to env vars)
     valid_users = {user_id: count for user_id, count in poop_tally.items() if count > 0}
 
     if not valid_users:
         await ctx.send("No poop emojis have been counted yet! 💩")
-        return
+        return  # 🛑 prevent sending a leaderboard below
 
     tally_message = "**💩 Poop Emoji Leaderboard 💩**\n"
     for user_id, count in sorted(valid_users.items(), key=lambda x: x[1], reverse=True):
