@@ -70,8 +70,8 @@ async def on_message(message):
 
 @bot.command()
 async def tally(ctx):
-    current_tally = load_tally()  # Reload from env
-    valid_users = {user_id: count for user_id, count in current_tally.items() if count > 0}
+    # Use in-memory tally (since we can't write to env vars)
+    valid_users = {user_id: count for user_id, count in poop_tally.items() if count > 0}
 
     if not valid_users:
         await ctx.send("No poop emojis have been counted yet! 💩")
