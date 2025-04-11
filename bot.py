@@ -70,18 +70,24 @@ async def on_message(message):
 
 @bot.command()
 async def tally(ctx):
+    print("⚙️ !tally command triggered")
+    
     valid_users = {user_id: count for user_id, count in poop_tally.items() if count > 0}
-
+    
     if not valid_users:
         await ctx.send("No poop emojis have been counted yet! 💩")
-        return  # 🛑 prevent sending a leaderboard below
+        return
 
     tally_message = "**💩 Poop Emoji Leaderboard 💩**\n"
     for user_id, count in sorted(valid_users.items(), key=lambda x: x[1], reverse=True):
-        user = await bot.fetch_user(int(user_id))
-        tally_message += f"**{user.name}**: {count} 💩\n"
+        try:
+            user = await bot.fetch_user(int(user_id))
+            tally_message += f"**{user.name}**: {count} 💩\n"
+        except:
+            tally_message += f"**Unknown User ({user_id})**: {count} 💩\n"
 
     await ctx.send(tally_message)
+    print("✅ Leaderboard sent.")
 
 # Run bot
 bot.run(TOKEN)
