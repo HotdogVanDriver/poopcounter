@@ -11,23 +11,22 @@ TALLY_FILE = "tally.json"  # File to store poop counts
 # Load tally from file
 def load_tally():
     try:
-        with open(TALLY_FILE, "r") as file:
-            data = json.load(file)
-            print("🔄 Loaded existing tally data from file:", data)  # Debug log
-            return data
-    except (FileNotFoundError, json.JSONDecodeError):
-        print("⚠️ No previous tally found. Starting fresh.")
+        data = os.getenv("TALLY_DATA")
+        if data:
+            tally = json.loads(data)
+            print("🔄 Loaded tally from TALLY_DATA env var:", tally)
+            return tally
+        else:
+            print("⚠️ No TALLY_DATA found, starting fresh.")
+            return {}
+    except Exception as e:
+        print(f"❌ Failed to load tally from env var: {e}")
         return {}
 
 # Save tally to file
 def save_tally():
-    print("🔹 Attempting to save tally...")  # Debug log
-    try:
-        with open(TALLY_FILE, "w") as file:
-            json.dump(poop_tally, file, indent=4)
-        print("✅ Tally saved successfully! Data:", poop_tally)  # Confirm save
-    except Exception as e:
-        print(f"❌ Failed to save tally: {e}")
+    print("📦 Updated tally — paste this into Railway TALLY_DATA if needed:")
+    print(json.dumps(poop_tally, indent=2))
 
 
 # Dictionary to store count per user
@@ -71,22 +70,18 @@ async def on_message(message):
 
 @bot.command()
 async def tally(ctx):
-    """Shows the current poop tally"""
-    poop_tally = load_tally()  # Load updated data before displaying
+    current_tally = load_tally()  # Reload from env
+    valid_users = {user_id: count for user_id, count in current_tally.items() if count > 0}
 
-    valid_users = {user_id: count for user_id, count in poop_tally.items() if count > 0}
-
-    if not valid_users:  # If no users have sent poops, send only this message
-        await ctx.send("No poop have been counted yet! 💩")
+    if not valid_users:
+        await ctx.send("No poop emojis have been counted yet! 💩")
         return
 
-    # If there are valid users, create the leaderboard
-    tally_message = "**💩 Poop Leaderboard 💩**\n"
+    tally_message = "**💩 Poop Emoji Leaderboard 💩**\n"
     for user_id, count in sorted(valid_users.items(), key=lambda x: x[1], reverse=True):
-        user = await bot.fetch_user(int(user_id))  # Convert back to int
+        user = await bot.fetch_user(int(user_id))
         tally_message += f"**{user.name}**: {count} 💩\n"
 
-    # Send only ONE message
     await ctx.send(tally_message)
 
 # Run bot
