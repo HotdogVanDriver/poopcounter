@@ -1,12 +1,12 @@
 import discord
 import json
 import os
+import random
 from discord.ext import commands
 
 # Load bot token from environment variable
 TOKEN = os.getenv("TOKEN")
 TARGET_CHANNEL_ID = 1346841725213212763  # Replace with your actual Discord channel ID
-TALLY_FILE = "tally.json"  # File to store poop counts
 
 # Load tally from environment variable
 def load_tally():
@@ -23,17 +23,27 @@ def load_tally():
         print(f"❌ Failed to load tally from env var: {e}")
         return {}
 
-# Save tally to logs (manually paste to Railway env var if needed)
+# Save tally to logs (manual copy/paste for Railway)
 def save_tally():
     print("📦 Updated tally — paste this into Railway TALLY_DATA if needed:")
     print(json.dumps(poop_tally, indent=2))
+
+# Milestone messages
+milestone_messages = [
+    "🎉 {name} just dropped their {count}th poop! Do you even wipe, bro?",
+    "💩 {name} has gone {count} times. We're gonna need a bigger toilet.",
+    "🚽 {name} unlocked the {count}-poop badge! That's commitment.",
+    "🔥 {name} is on a poop streak! {count} poops and counting!",
+    "🧻 Someone get {name} some toilet paper. That's {count} 💩 now!",
+    "🥵 {name} hit {count} dumps. Somebody call a plumber!"
+]
 
 # Dictionary to store count per user
 poop_tally = load_tally()
 
 # Setup bot
 intents = discord.Intents.default()
-intents.message_content = True  # Required to read messages
+intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
@@ -43,9 +53,9 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if message.author.bot:
-        return  # Skip bot messages
+        return  # Ignore other bots (including itself)
 
-    # 👇 Skip poop logic for any command messages like !tally
+    # Don't process poop logic for command messages
     if message.content.startswith("!"):
         await bot.process_commands(message)
         return
@@ -66,7 +76,11 @@ async def on_message(message):
             print(f"💩 Updated tally for {message.author.name}: {previous_count} → {poop_tally[user_id]}")
             print("📊 Current poop_tally:", poop_tally)
             save_tally()
-            print("📁 Save function called!")
+
+            # 🎉 Milestone celebration
+            if poop_tally[user_id] % 10 == 0:
+                msg = random.choice(milestone_messages)
+                await message.channel.send(msg.format(name=message.author.display_name, count=poop_tally[user_id]))
 
     await bot.process_commands(message)
 
@@ -91,5 +105,5 @@ async def tally(ctx):
     await ctx.send(tally_message)
     print("✅ Leaderboard sent.")
 
-# Run bot
+# Run the bot
 bot.run(TOKEN)
